@@ -29,11 +29,9 @@ then get to coding.
 (If you are into this style of puzzle, also check out my [Tensor
 Puzzles](https://github.com/srush/Tensor-Puzzles) for PyTorch.)
 
-[Walkthrough Guide](https://www.youtube.com/watch?v=K4T-YwsOxrM)
-
 
 ```python
-!pip install -qqq git+https://github.com/danoneata/chalk@srush-patch-1
+!pip install -qqq git+https://github.com/chalk-diagrams/planar git+https://github.com/danoneata/chalk@srush-patch-1
 !wget -q https://github.com/srush/GPU-Puzzles/raw/main/robot.png https://github.com/srush/GPU-Puzzles/raw/main/lib.py
 ```
 
@@ -79,6 +77,7 @@ def map_test(cuda):
     def call(out, a) -> None:
         local_i = cuda.threadIdx.x
         # FILL ME IN (roughly 1 lines)
+        out[local_i] = a[local_i] + 10
 
     return call
 
@@ -96,7 +95,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             0 |             0 | 
     
 
 
@@ -114,9 +113,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0.]
-    Spec : [10 11 12 13]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/MVUdQYK.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 2 - Zip
@@ -134,6 +142,7 @@ def zip_test(cuda):
     def call(out, a, b) -> None:
         local_i = cuda.threadIdx.x
         # FILL ME IN (roughly 1 lines)
+        out[local_i] = a[local_i] + b[local_i]
 
     return call
 
@@ -152,7 +161,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             2 |             1 |             0 |             0 | 
     
 
 
@@ -167,17 +176,21 @@ problem.show()
 
 
 ```python
-
-```
-
-
-```python
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0.]
-    Spec : [0 2 4 6]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/g9I2ZmK.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 3 - Guards
@@ -191,6 +204,8 @@ def map_guard_test(cuda):
     def call(out, a, size) -> None:
         local_i = cuda.threadIdx.x
         # FILL ME IN (roughly 2 lines)
+        if local_i < size:
+            out[local_i] = a[local_i] + 10
 
     return call
 
@@ -214,7 +229,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             0 |             0 | 
     
 
 
@@ -222,7 +237,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_21_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_20_1.svg)
     
 
 
@@ -232,9 +247,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0.]
-    Spec : [10 11 12 13]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/ros6RLC.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 4 - Map 2D
@@ -249,6 +273,8 @@ def map_2D_test(cuda):
         local_i = cuda.threadIdx.x
         local_j = cuda.threadIdx.y
         # FILL ME IN (roughly 2 lines)
+        if local_i < size and local_j < size:
+            out[local_i, local_j] = a[local_i, local_j] + 10
 
     return call
 
@@ -266,7 +292,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             0 |             0 | 
     
 
 
@@ -274,7 +300,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_24_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_23_1.svg)
     
 
 
@@ -284,11 +310,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [[0. 0.]
-     [0. 0.]]
-    Spec : [[10 11]
-     [12 13]]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/9hRi2jN.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 5 - Broadcast
@@ -303,6 +336,8 @@ def broadcast_test(cuda):
         local_i = cuda.threadIdx.x
         local_j = cuda.threadIdx.y
         # FILL ME IN (roughly 2 lines)
+        if local_i < size and local_j < size:
+            out[local_i, local_j] = a[local_i, 0] + b[0, local_j]
 
     return call
 
@@ -327,7 +362,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             2 |             1 |             0 |             0 | 
     
 
 
@@ -335,7 +370,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_27_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_26_1.svg)
     
 
 
@@ -345,11 +380,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [[0. 0.]
-     [0. 0.]]
-    Spec : [[0 1]
-     [1 2]]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/9hRi2jN.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 6 - Blocks
@@ -366,6 +408,8 @@ def map_block_test(cuda):
     def call(out, a, size) -> None:
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
         # FILL ME IN (roughly 2 lines)
+        if i < size:
+            out[i] = a[i] + 10
 
     return call
 
@@ -390,7 +434,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             0 |             0 | 
     
 
 
@@ -398,7 +442,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_31_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_30_1.svg)
     
 
 
@@ -408,9 +452,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0. 0. 0. 0. 0. 0.]
-    Spec : [10 11 12 13 14 15 16 17 18]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/ZNem5o3.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 7 - Blocks 2D
@@ -424,6 +477,9 @@ def map_block2D_test(cuda):
     def call(out, a, size) -> None:
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
         # FILL ME IN (roughly 4 lines)
+        j = cuda.blockIdx.y * cuda.blockDim.y + cuda.threadIdx.y
+        if i < size and j < size:
+            out[i, j] = a[i, j] + 10
 
     return call
 
@@ -449,7 +505,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             0 |             0 | 
     
 
 
@@ -457,7 +513,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_34_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_33_1.svg)
     
 
 
@@ -467,17 +523,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [[0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0.]]
-    Spec : [[11. 11. 11. 11. 11.]
-     [11. 11. 11. 11. 11.]
-     [11. 11. 11. 11. 11.]
-     [11. 11. 11. 11. 11.]
-     [11. 11. 11. 11. 11.]]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/2F6j2B4.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 8 - Shared
@@ -507,6 +564,7 @@ def shared_test(cuda):
             cuda.syncthreads()
 
         # FILL ME IN (roughly 2 lines)
+        out[i] = shared[local_i] + 10
 
     return call
 
@@ -531,7 +589,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             1 |             0 |             0 |             1 | 
+       |             1 |             1 |             1 |             1 | 
     
 
 
@@ -539,7 +597,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_39_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_38_1.svg)
     
 
 
@@ -549,9 +607,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0. 0. 0. 0. 0.]
-    Spec : [11. 11. 11. 11. 11. 11. 11. 11.]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/3V37Hqr.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 9 - Pooling
@@ -577,6 +644,15 @@ def pool_test(cuda):
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
         local_i = cuda.threadIdx.x
         # FILL ME IN (roughly 8 lines)
+        if i < size:
+            shared[i] = a[i]
+            cuda.syncthreads()
+        if i < 1:
+            out[i] = shared[i]
+        elif i < 2:
+            out[i] = shared[i] + shared[i - 1]
+        else:
+            out[i] = shared[i - 2] + shared[i - 1] + shared[i]
 
     return call
 
@@ -601,7 +677,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             3 |             1 | 
     
 
 
@@ -609,7 +685,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_43_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_42_1.svg)
     
 
 
@@ -619,9 +695,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0. 0. 0. 0. 0.]
-    Spec : [ 0.  1.  3.  6.  9. 12. 15. 18.]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/kLvno0p.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 10 - Dot Product
@@ -645,6 +730,20 @@ def dot_test(cuda):
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
         local_i = cuda.threadIdx.x
         # FILL ME IN (roughly 9 lines)
+        if i < size:
+            shared[i] = a[i] * b[i]
+            cuda.syncthreads()
+        threshold = size // 2
+        while threshold > 0:
+            j = i + threshold
+            if i < threshold:
+                shared[i] = shared[i] + shared[j]
+            cuda.syncthreads()
+            threshold = threshold // 2
+
+        if i == 0:
+            out[0] = shared[0]
+
     return call
 
 
@@ -669,7 +768,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             2 |             1 |             7 |             4 | 
     
 
 
@@ -677,7 +776,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_47_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_46_1.svg)
     
 
 
@@ -687,9 +786,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0.]
-    Spec : 140
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/wScLiVz.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 11 - 1D Convolution
@@ -752,7 +860,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_50_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_49_1.svg)
     
 
 
@@ -799,7 +907,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_53_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_52_1.svg)
     
 
 
@@ -876,7 +984,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_58_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_57_1.svg)
     
 
 
@@ -923,7 +1031,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_61_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_60_1.svg)
     
 
 
@@ -992,7 +1100,7 @@ problem.show()
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_64_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_63_1.svg)
     
 
 
@@ -1078,7 +1186,7 @@ problem.show(sparse=True)
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_67_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_66_1.svg)
     
 
 
@@ -1129,7 +1237,7 @@ problem.show(sparse=True)
 
 
     
-![svg](GPU_puzzlers_files/GPU_puzzlers_70_1.svg)
+![svg](GPU_puzzlers_files/GPU_puzzlers_69_1.svg)
     
 
 
