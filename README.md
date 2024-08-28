@@ -121,7 +121,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/MVUdQYK.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/fqHxOGI.mp4"  type="video/mp4">
 </video>
 
 
@@ -187,7 +187,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/g9I2ZmK.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/aydRUz8.mp4"  type="video/mp4">
 </video>
 
 
@@ -255,7 +255,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/ros6RLC.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/HlaTE8H.mp4"  type="video/mp4">
 </video>
 
 
@@ -318,7 +318,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/9hRi2jN.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/MQCIwzT.mp4"  type="video/mp4">
 </video>
 
 
@@ -388,7 +388,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/9hRi2jN.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/F1SChho.mp4"  type="video/mp4">
 </video>
 
 
@@ -460,7 +460,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/ZNem5o3.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/3V37Hqr.mp4"  type="video/mp4">
 </video>
 
 
@@ -531,7 +531,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/2F6j2B4.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/fqHxOGI.mp4"  type="video/mp4">
 </video>
 
 
@@ -615,7 +615,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/3V37Hqr.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/9hRi2jN.mp4"  type="video/mp4">
 </video>
 
 
@@ -703,7 +703,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/kLvno0p.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/sWp0Dqd.mp4"  type="video/mp4">
 </video>
 
 
@@ -794,7 +794,7 @@ problem.check()
 
 
 <video alt="test" controls autoplay=1>
-    <source src="https://openpuppies.com/mp4/wScLiVz.mp4"  type="video/mp4">
+    <source src="https://openpuppies.com/mp4/aydRUz8.mp4"  type="video/mp4">
 </video>
 
 
@@ -818,12 +818,27 @@ def conv_spec(a, b):
 MAX_CONV = 4
 TPB = 8
 TPB_MAX_CONV = TPB + MAX_CONV
+SHARE_MEM_FULL_SIZE = 16
 def conv_test(cuda):
     def call(out, a, b, a_size, b_size) -> None:
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
         local_i = cuda.threadIdx.x
 
         # FILL ME IN (roughly 17 lines)
+        shared_a = cuda.shared.array(SHARE_MEM_FULL_SIZE, numba.float32)
+        shared_b = cuda.shared.array(SHARE_MEM_FULL_SIZE, numba.float32)
+        for idx in range(i, a_size, TPB):
+            shared_a[idx] = a[idx]
+        for idx in range(i, b_size, TPB):
+            shared_b[idx] = b[idx]
+        cuda.syncthreads()
+        for idx in range(i, a_size, TPB):
+            ans = 0
+            for j in range(b_size):
+                if idx + j < a_size:
+                    ans += shared_a[idx + j] * shared_b[j]
+            out[idx] = ans
+
 
     return call
 
@@ -852,7 +867,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             2 |             1 |             6 |             2 | 
     
 
 
@@ -870,9 +885,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0. 0. 0.]
-    Spec : [ 5.  8. 11. 14.  5.  0.]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/g9I2ZmK.mp4"  type="video/mp4">
+</video>
+
+
 
 
 Test 2
@@ -899,7 +923,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             3 |             2 |            16 |             3 | 
     
 
 
@@ -917,9 +941,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
-    Spec : [14. 20. 26. 32. 38. 44. 50. 56. 62. 68. 74. 80. 41. 14.  0.]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/bRKfspn.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 12 - Prefix Sum
@@ -950,14 +983,34 @@ def sum_test(cuda):
         i = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
         local_i = cuda.threadIdx.x
         # FILL ME IN (roughly 12 lines)
+        if i < size:
+            cache[local_i] = a[i]
+        cuda.syncthreads()
+        # stride = TPB // 2
+        # while stride > 0:
+        #     if local_i < stride and local_i + stride < size:
+        #         cache[local_i] = cache[local_i] + cache[local_i + stride]
+        #     cuda.syncthreads()
+        #     stride = stride // 2
+        stride = 1
+        while stride < TPB:
+            if local_i % (stride * 2) == 0 and local_i + stride < size:
+                cache[local_i] = cache[local_i] + cache[local_i + stride]
+            cuda.syncthreads()
+            stride *= 2
+
+
+        if local_i == 0:
+            out[cuda.blockIdx.x] = cache[local_i]
 
     return call
 
 
 # Test 1
 
-SIZE = 8
-out = np.zeros(1)
+SIZE = 6
+out_num = (SIZE // TPB) + 1
+out = np.zeros(out_num)
 inp = np.arange(SIZE)
 problem = CudaProblem(
     "Sum (Simple)",
@@ -965,7 +1018,7 @@ problem = CudaProblem(
     [inp],
     out,
     [SIZE],
-    Coord(1, 1),
+    Coord(out_num, 1),
     Coord(TPB, 1),
     spec=sum_spec,
 )
@@ -976,7 +1029,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             7 |             4 | 
     
 
 
@@ -994,9 +1047,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0.]
-    Spec : [28.]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/wHVpHVG.mp4"  type="video/mp4">
+</video>
+
+
 
 
 Test 2
@@ -1023,7 +1085,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             7 |             4 | 
     
 
 
@@ -1041,9 +1103,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [0. 0.]
-    Spec : [28. 77.]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/pn1e9TO.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 13 - Axis Sum
@@ -1067,6 +1138,24 @@ def axis_sum_test(cuda):
         local_i = cuda.threadIdx.x
         batch = cuda.blockIdx.y
         # FILL ME IN (roughly 12 lines)
+        if local_i < size:
+            cache[local_i] = a[batch, local_i]
+        cuda.syncthreads()
+        # stride = TPB // 2
+        # while stride > 0:
+        #     if local_i < stride and local_i + stride < size:
+        #         cache[local_i] = cache[local_i] + cache[local_i + stride]
+        #     cuda.syncthreads()
+        #     stride = stride // 2
+        stride = 1
+        while stride < TPB:
+            if local_i % (stride * 2) == 0 and local_i + stride < size:
+                cache[local_i] = cache[local_i] + cache[local_i + stride]
+            cuda.syncthreads()
+            stride *= 2
+
+        if local_i == 0:
+            out[batch, 0] = cache[0]
 
     return call
 
@@ -1092,7 +1181,7 @@ problem.show()
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             1 |             1 |             7 |             4 | 
     
 
 
@@ -1110,15 +1199,18 @@ problem.show()
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [[0.]
-     [0.]
-     [0.]
-     [0.]]
-    Spec : [[ 15.]
-     [ 51.]
-     [ 87.]
-     [123.]]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/pCAIlxD.mp4"  type="video/mp4">
+</video>
+
+
 
 
 ## Puzzle 14 - Matrix Multiply!
@@ -1151,11 +1243,24 @@ def mm_oneblock_test(cuda):
         local_i = cuda.threadIdx.x
         local_j = cuda.threadIdx.y
         # FILL ME IN (roughly 14 lines)
+        sum = 0
+        for tile in range(0, size, TPB):
+            if i < size and tile + local_j < size:
+                a_shared[local_i, local_j] = a[i, tile + local_j]
+            if j < size and tile + local_i < size:
+                b_shared[local_i, local_j] = b[tile + local_i, j]
+            cuda.syncthreads()
+
+            for k in range(TPB):
+                if tile + k < size:
+                    sum += a_shared[local_i, k] * b_shared[k, local_j]
+
+        if i < size and j < size:
+            out[i, j] = sum
 
     return call
 
 # Test 1
-
 SIZE = 2
 out = np.zeros((SIZE, SIZE))
 inp1 = np.arange(SIZE * SIZE).reshape((SIZE, SIZE))
@@ -1178,7 +1283,7 @@ problem.show(sparse=True)
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             2 |             1 |             4 |             2 | 
     
 
 
@@ -1196,11 +1301,18 @@ problem.show(sparse=True)
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [[0. 0.]
-     [0. 0.]]
-    Spec : [[ 1  3]
-     [ 3 13]]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/eyxH0Wc.mp4"  type="video/mp4">
+</video>
+
+
 
 
 Test 2
@@ -1229,7 +1341,7 @@ problem.show(sparse=True)
      
        Score (Max Per Thread):
        |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
-       |             0 |             0 |             0 |             0 | 
+       |             6 |             1 |            16 |             6 | 
     
 
 
@@ -1247,21 +1359,16 @@ problem.show(sparse=True)
 problem.check()
 ```
 
-    Failed Tests.
-    Yours: [[0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 0. 0. 0.]]
-    Spec : [[  140   364   588   812  1036  1260  1484  1708]
-     [  364  1100  1836  2572  3308  4044  4780  5516]
-     [  588  1836  3084  4332  5580  6828  8076  9324]
-     [  812  2572  4332  6092  7852  9612 11372 13132]
-     [ 1036  3308  5580  7852 10124 12396 14668 16940]
-     [ 1260  4044  6828  9612 12396 15180 17964 20748]
-     [ 1484  4780  8076 11372 14668 17964 21260 24556]
-     [ 1708  5516  9324 13132 16940 20748 24556 28364]]
+    Passed Tests!
+
+
+
+
+
+
+<video alt="test" controls autoplay=1>
+    <source src="https://openpuppies.com/mp4/Wj2PGRl.mp4"  type="video/mp4">
+</video>
+
+
 
